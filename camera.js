@@ -1,5 +1,5 @@
 const PiCamera = require('pi-camera')
-const myCamera = new PiCamera({
+module.export = myCamera = new PiCamera({
 	mode: 'video',
 	output: `${__dirname}/videos/video.h264`,
 	width: 1920,
@@ -7,12 +7,3 @@ const myCamera = new PiCamera({
 	timeout: 5000, // Record for 5 seconds
 	nopreview: true
 })
-
-myCamera
-	.record()
-	.then(result => {
-		console.log('success')
-	})
-	.catch(error => {
-		console.log('error', error)
-	})
