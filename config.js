@@ -9,6 +9,7 @@ const droneStatePort = 8890
 const dgram = require('dgram')
 const drone = dgram.createSocket('udp4')
 const droneState = dgram.createSocket('udp4')
+const fs = require('fs')
 
 drone.bind(dronePort)
 droneState.bind(droneStatePort)
@@ -24,5 +25,6 @@ module.exports = {
 	droneHost,
 	drone,
 	droneState,
-	droneStatePort
+	droneStatePort,
+	fs
 }
