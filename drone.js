@@ -31,7 +31,7 @@ io.on('connection', socket => {
 		myCamera
 			.record()
 			.then(result => {
-				io.emit(video, result)
+				io.emit('video', result)
 			})
 
 			.catch(error => {
