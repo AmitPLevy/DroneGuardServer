@@ -1,5 +1,5 @@
 const PiCamera = require('pi-camera')
-module.export = myCamera = new PiCamera({
+exports.myCamera = new PiCamera({
 	mode: 'video',
 	output: `${__dirname}/videos/video.h264`,
 	width: 1920,

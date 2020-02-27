@@ -1,5 +1,5 @@
 const { server, port, app } = require('./config')
-const { camera } = require('./camera')
+const { myCamera } = require('./camera')
 
 app.get('/camera', () => {
 	myCamera
