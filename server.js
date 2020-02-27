@@ -1,11 +1,14 @@
 const { server, port, app } = require('./config')
+const { drone, droneHost, dronePort, io } = require('./config')
 const { myCamera } = require('./camera')
 
 app.get('/camera', () => {
 	myCamera
 		.record()
 		.then(result => {
-			console.log('success')
+			io.on('connection', socket => {
+				socket.emit('video', result)
+			})
 		})
 		.catch(error => {
 			console.log('errorrrrrr', error)
