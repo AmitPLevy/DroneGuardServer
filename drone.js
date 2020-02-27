@@ -1,4 +1,4 @@
-const { drone, droneHost, dronePort, io } = require('./config')
+const { drone, droneHost, dronePort, io, fs } = require('./config')
 const { myCamera } = require('./camera')
 
 drone.send('command', 0, 7, dronePort, droneHost, (err, success) => {
@@ -31,7 +31,8 @@ io.on('connection', socket => {
 		myCamera
 			.record()
 			.then(result => {
-				io.emit('video', result)
+				const file = fs.readFile(`${__dirname}/videos/video.h264`)
+				io.emit('video', file)
 			})
 
 			.catch(error => {
