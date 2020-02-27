@@ -7,7 +7,9 @@ app.get('/camera', () => {
 		.record()
 		.then(result => {
 			io.on('connection', socket => {
-				socket.emit('video', result)
+				socket.on('video', () => {
+					io.emit(video, result)
+				})
 			})
 		})
 		.catch(error => {
