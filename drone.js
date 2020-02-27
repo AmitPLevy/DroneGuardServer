@@ -31,8 +31,10 @@ io.on('connection', socket => {
 		myCamera
 			.record()
 			.then(result => {
-				const file = fs.readFile(`${__dirname}/videos/video.h264`)
-				io.emit('video', file)
+				fs.readFile(`${__dirname}/videos/video.h264`, 'utf8', (err, data) => {
+					if (err) throw err
+					io.emit('video', data)
+				})
 			})
 
 			.catch(error => {
