@@ -1,4 +1,5 @@
 const { drone, droneHost, dronePort, io } = require('./config')
+const { myCamera } = require('./camera')
 
 drone.send('command', 0, 7, dronePort, droneHost, (err, success) => {
 	if (err) {
@@ -22,5 +23,19 @@ io.on('connection', socket => {
 			if (err) console.log(err)
 		})
 		io.emit('command', command)
+	})
+})
+
+io.on('connection', socket => {
+	socket.on('video', () => {
+		myCamera
+			.record()
+			.then(result => {
+				io.emit(video, result)
+			})
+
+			.catch(error => {
+				console.log('errorrrrrr', error)
+			})
 	})
 })
