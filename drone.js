@@ -1,5 +1,11 @@
 const { drone, droneHost, dronePort, io, fs } = require('./config')
-const { myCamera } = require('./camera')
+// const { myCamera } = require('./camera')
+const cv = require('opencv4nodejs')
+
+const FPS = 10
+const wCap = new cv.VideoCapture(0)
+// wCap.set(cv.CAP_PROP_FRAME_HEIGHT, 300)
+// wCap.set(cv.CAP_PROP_FRAME_WIDTH, 300)
 
 drone.send('command', 0, 7, dronePort, droneHost, (err, success) => {
 	if (err) {
@@ -13,11 +19,11 @@ const keepAlive = () => {
 	})
 }
 
-let interval
+let commandInterval
 io.on('connection', socket => {
 	socket.on('command', command => {
-		if (command === 'takeoff') interval = setInterval(keepAlive, 10000)
-		if (command === 'land') clearInterval(interval)
+		if (command === 'takeoff') commandInterval = setInterval(keepAlive, 10000)
+		if (command === 'land') clearInterval(commandInterval)
 		console.log(command)
 		drone.send(command, 0, command.length, dronePort, droneHost, err => {
 			if (err) console.log(err)
@@ -26,19 +32,13 @@ io.on('connection', socket => {
 	})
 })
 
+let streamInterval
 io.on('connection', socket => {
 	socket.on('video', () => {
-		myCamera
-			.record()
-			.then(result => {
-				fs.readFile(`${__dirname}/videos/video.h264`, 'utf8', (err, data) => {
-					if (err) throw err
-					io.emit('video', data)
-				})
-			})
-
-			.catch(error => {
-				console.log('errorrrrrr', error)
-			})
+		streamInterval = setInterval(() => {
+			const frame = wCap.read()
+			const image = cv.imencode('.jpg', frame).toString('base64')
+			io.emit('video', image)
+		}, 1000 / FPS)
 	})
 })
